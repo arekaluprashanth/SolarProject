@@ -1,9 +1,11 @@
-const CACHE_NAME = 'solar-explorer-v1';
+const CACHE_NAME = 'solar-explorer-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/solar.html',
   '/style.css',
+  '/logo.png',
+  '/favicon.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css'
 ];
 
