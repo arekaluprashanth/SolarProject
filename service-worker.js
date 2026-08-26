@@ -1,75 +1,64 @@
-const CACHE_NAME = 'solar-explorer-v2';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'solar-explorer-v3';
+const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/solar.html',
   '/style.css',
   '/logo.png',
   '/favicon.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css'
+  'https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 ];
 
-// Install event: Cache assets
+// Install: Cache static core assets
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache');
-        return cache.addAll(ASSETS_TO_CACHE);
-      })
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(STATIC_ASSETS);
+    })
   );
 });
 
-// Activate event: Clean up old caches
+// Activate: Remove old caches immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then(keys => {
       return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
+        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
       );
     }).then(() => self.clients.claim())
   );
 });
 
-// Fetch event: Serve from cache, fallback to network
+// Fetch: Cache-First for static/images, Stale-While-Revalidate for performance
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        return fetch(event.request).then(
-          function(response) {
-            // Check if we received a valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // IMPORTANT: Clone the response. A response is a stream
-            // and because we want the browser to consume the response
-            // as well as the cache consuming the response, we need
-            // to clone it so we have two streams.
-            var responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(function(cache) {
-                // Only cache our own domain requests (skip cross-origin image APIs to avoid quota issues, unless desired)
-                if (event.request.url.startsWith(self.location.origin)) {
-                    cache.put(event.request, responseToCache);
-                }
-              });
-
-            return response;
+    caches.match(event.request).then(cachedResponse => {
+      if (cachedResponse) {
+        // Fetch in background to update cache for next time
+        fetch(event.request).then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse));
           }
-        );
-      })
+        }).catch(() => {});
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then(networkResponse => {
+        if (!networkResponse || (networkResponse.status !== 200 && networkResponse.type !== 'opaque')) {
+          return networkResponse;
+        }
+
+        const responseClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+
+        return networkResponse;
+      });
+    })
   );
 });

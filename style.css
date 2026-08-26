@@ -1,4 +1,12 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,700");
+/* Font loaded via <link> in HTML for non-blocking render */
+/* GPU-accelerated rendering for 165Hz smooth animations */
+* {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+html {
+  scroll-behavior: smooth;
+}
 .solar_systm {
   transform-style: preserve-3d;
   pointer-events: none;
@@ -6,6 +14,7 @@
   position: absolute;
   left: 0;
   right: 0;
+  will-change: transform;
 }
 
 * {
@@ -45,6 +54,8 @@ body .solar_systm .planet {
   background-size: 1140px 910px !important;
   top: auto;
   bottom: -920px;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 body .solar_systm .planet .moon {
   height: 200px;
@@ -57,6 +68,8 @@ body .solar_systm .planet .moon {
   text-transform: uppercase;
   opacity: 0;
   transition: all 0.6s 0.2s;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 body .solar_systm .planet .moon h2 {
   font-weight: 100;

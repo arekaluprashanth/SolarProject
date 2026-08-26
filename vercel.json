@@ -14,7 +14,20 @@
   ],
   "headers": [
     {
-      "source": "/(.*)\\.(js|css|html|json|svg|png|jpg|jpeg|gif|ico|webp)",
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|json|svg|png|jpg|jpeg|gif|ico|webp|woff|woff2|ttf)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -28,6 +41,10 @@
         {
           "key": "Strict-Transport-Security",
           "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         }
       ]
     }
