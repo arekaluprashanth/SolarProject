@@ -1,6 +1,6 @@
 # Solar System
 
-An interactive, beautifully crafted Solar System explorer. This project features a fully animated solar system where planets orbit the sun, complete with moons and trajectory paths. 
+An interactive, beautifully crafted Solar System. This project features a fully animated solar system where planets orbit the sun, complete with moons and trajectory paths. 
 
 Users can click on different planets to reveal detailed information panels about each celestial body.
 
@@ -17,4 +17,4 @@ Users can click on different planets to reveal detailed information panels about
 
 ---
 
-[**Explore the Solar System Live**](https://solar-project-livid.vercel.app)
+[**Explore the Solar System Live**](https://solar-system-live.vercel.app)
