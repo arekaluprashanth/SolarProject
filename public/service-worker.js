@@ -1,12 +1,13 @@
-const CACHE_NAME = 'solar-explorer-v4';
+const CACHE_NAME = 'solar-explorer-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/app.js',
-  '/styles.css',
+  '/solar.html',
+  '/style.css',
   '/logo.png',
   '/favicon.png',
-  '/manifest.json'
+  'https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 ];
 
 // Install: Cache static core assets
